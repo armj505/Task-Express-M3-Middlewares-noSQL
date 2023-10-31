@@ -1,17 +1,21 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const upload = require("../../middlewares/upload");
 const {
   postsGet,
   postsUpdate,
   postsDelete,
   postsCreate,
-} = require('./posts.controllers');
+  fetchOne,
+} = require("./posts.controllers");
 
-router.get('/', postsGet);
-router.post('/', postsCreate);
+router.param("postId", async (req, res, next, postId) => {
+  const post = await fetchOne(postId, next);
+  req.post = post;
+  next();
+});
 
-router.delete('/:postId', postsDelete);
-
-router.put('/:postId', postsUpdate);
+router("/").get(postsGet).post(upload.single("image"), postsCreate);
+router("/:postId").delete(postsDelete).put(upload.single("image"), postsUpdate);
 
 module.exports = router;
