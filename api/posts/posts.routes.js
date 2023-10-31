@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../../middlewares/upload");
+const { titleValidation } = require("../../middlewares/validation");
+const validate = require("express-validation");
 const {
   postsGet,
   postsUpdate,
@@ -15,7 +17,16 @@ router.param("postId", async (req, res, next, postId) => {
   next();
 });
 
-router("/").get(postsGet).post(upload.single("image"), postsCreate);
+router("/")
+  .get(postsGet)
+  .post(
+    upload.single("image"),
+    validate(titleValidation, {}, {}),
+    (req, res) => {
+      res.json(200);
+    },
+    postsCreate
+  );
 router("/:postId").delete(postsDelete).put(upload.single("image"), postsUpdate);
 
 module.exports = router;

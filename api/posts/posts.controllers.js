@@ -54,3 +54,12 @@ exports.fetchOne = async (id, next) => {
     next(error);
   }
 };
+
+exports.createSlug = async (req, next) => {
+  try {
+    const slug = req.body.title.split(" ").join("-");
+    req.body.slug = slug;
+  } catch (error) {
+    next(error);
+  }
+};

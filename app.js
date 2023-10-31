@@ -5,9 +5,11 @@ const connectDb = require("./database");
 
 connectDb();
 const morgan = require("morgan");
+const { validationError } = require("express-validation");
 app.use(morgan("dev"));
 
 app.use(express.json());
+app.use(validationError);
 app.use("/posts", postsRoutes);
 
 app.use("*", (req, res, next) => {
